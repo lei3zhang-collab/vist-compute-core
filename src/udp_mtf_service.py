@@ -18,7 +18,7 @@ VIST-Compute-Core: 高速 UDP 数据桥接与 MTF 分析引擎
 -------------------------------
 1. 高可靠性 UDP 接收：通过自定义包头协议（0xEE）实现分片数据的无损重组与偏移校准。
 2. 亮度矩阵还原：将 202,500 字节的二进制流还原为 9 个标准的 150x150 亮度矩阵。
-3. 批量 MTF 计算：调用底层 SFR 内核对 9 个方位（风车标靶）的 ROI 进行解析度量化。
+3. 多线程批量 MTF 计算：调用底层 SFR 内核对 9 个方位（风车标靶）的 ROI 进行解析度量化。
 4. 结果闭环回传：利用 Socket 二进制流将计算出的 MTF@0.25 指标回传至虚拟机，实现闭环控制。
 5. 状态自修复：具备缓冲区重置与状态清理机制，支持连续、长时间的产线自动化测试。
 
@@ -33,6 +33,7 @@ import socket
 import numpy as np
 import cv2
 from sfr_core import mtf_engine
+from concurrent.futures import ThreadPoolExecutor
 
 # --- 回传配置 (Return Configuration) ---
 # 用于将计算结果发送到虚拟机的专用套接字
@@ -108,9 +109,10 @@ def main_loop():
                     """
                     # --------------------------------------------
                     
-                    # 4. 批量 MTF 计算 (MTF Computation)
+                    # 4. 所线程批量 MTF 计算 (MTF Computation)
                     # 调用底层 mtf_engine 进行各方位 MTF@0.25 提取
-                    mtf_values = [mtf_engine.get_MTF_at_025(roi) for roi in all_rois]
+                    with ThreadPoolExecutor(max_workers=9) as executor:
+                        mtf_values = list(executor.map(mtf_engine.get_MTF_at_025, all_rois))
                     print(f"MTF 计算完成: {mtf_values}")
 
                     # 5. 数据封装与回传 (Feedback Loop)
