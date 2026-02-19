@@ -1,0 +1,8 @@
+# 替换为你的实际绝对路径
+path: D:\RosProjects\vist-compute-core\data\mtf_dataset
+train: images\train
+val: images\val
+
+# 类别定义 (必须和 classes.txt 里的顺序一致)
+names:
+  0: roi
