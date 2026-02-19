@@ -4,7 +4,7 @@
 
 ## 1. 系统架构 (System Architecture)
 
-系统遵循“端-云”协同的工业测试模式，通过千兆网络实现数据采集与精密计算的解耦：
+系统遵循“端-云”协同的工业测试模式，通过以太网实现数据采集与精密计算的解耦：
 
 ```mermaid
 graph LR
@@ -22,9 +22,7 @@ graph LR
 ## 2. 核心算法验证 (Algorithm Verification)
 
 系统核心计算单元基于 ISO 12233 斜边法（Slanted Edge）。下图展示了系统对模拟生成的ROI 进行计算的反馈结果：
-
-![SFR Analysis Result](assets\sfr_curve.png)
-
+![SFR Analysis Result](assets/sfr_curve.png)
 *图：VIST 计算核心生成的 SFR 分析报告。左侧为提取的斜边 ROI（ blur_sigma=1.2, noise_level=0.05 模拟模糊度），右侧为推导出的 MTF 曲线。当前 Target Frequency (0.25 cy/px) 处的调制值为 0.612。*
 
 ### 2.1 ISO 12233 光学评估链路
